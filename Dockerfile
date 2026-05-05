@@ -1,4 +1,3 @@
-```
 # Etapa 1: Build
 FROM node:20-alpine AS builder
 
@@ -43,4 +42,3 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
 
 # Comando para iniciar la aplicación
 CMD ["node", "src/index.js"]
-```
