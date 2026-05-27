@@ -172,7 +172,12 @@ app.post("/ventas", authenticateToken, async (req, res) => {
       id: producto.id,
       nombre: producto.nombre,
       precio: producto.precio,
-      autor: producto.autor || null,
+      precioCosto: producto.precioCosto || 0,
+      provedor:
+        producto.provedor || producto.proveedor || producto.autor || null,
+      proveedor:
+        producto.proveedor || producto.provedor || producto.autor || null,
+      autor: producto.autor || producto.provedor || producto.proveedor || null,
     },
     metodoPago: req.body.metodoPago,
     nombreComprador: req.body.nombreComprador || null,
@@ -254,4 +259,3 @@ app.delete("/usuarios/:id", authenticateToken, async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
