@@ -190,6 +190,37 @@ app.get("/ventas", authenticateToken, async (req, res) => {
   res.send(lista);
 });
 
+app.patch("/ventas/:id", authenticateToken, async (req, res) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).send({ error: "No autorizado" });
+  }
+
+  const coloresPermitidos = ["verde", "amarillo", null];
+  const { marcaColor } = req.body;
+
+  if (!coloresPermitidos.includes(marcaColor)) {
+    return res.status(400).send({ error: "Color de marca inválido" });
+  }
+
+  const ventasCollection = db.collection("ventas");
+
+  try {
+    const result = await ventasCollection.findOneAndUpdate(
+      { _id: new ObjectId(req.params.id) },
+      { $set: { marcaColor } },
+      { returnDocument: "after" },
+    );
+
+    if (!result) {
+      return res.status(404).send({ error: "Venta no encontrada" });
+    }
+
+    res.send({ ok: true, venta: result });
+  } catch {
+    res.status(400).send({ error: "ID inválido" });
+  }
+});
+
 app.delete("/ventas/:id", authenticateToken, async (req, res) => {
   const ventasCollection = db.collection("ventas");
   try {
@@ -223,3 +254,4 @@ app.delete("/usuarios/:id", authenticateToken, async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
